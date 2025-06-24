@@ -52,7 +52,7 @@ export function BookFilter({ filter: {
             <div className="w-2 h-8 bg-gradient-to-b from-accent to-primary rounded-full"></div>
             <h2 className="text-xl font-bold text-accent">🔍 搜索绘本</h2>
           </div>
-          <div className="flex gap-3 max-w-md">
+          <div className="flex flex-col sm:flex-row gap-3 max-w-full sm:max-w-md">
             <div className="relative flex-1">
               <Input
                 type="text"
@@ -60,7 +60,7 @@ export function BookFilter({ filter: {
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="pr-10 rounded-full border-2 border-primary/20 focus:border-primary transition-colors"
+                className="pr-10 rounded-full border-2 border-primary/20 focus:border-primary transition-colors text-sm md:text-base"
               />
               {searchKeyword && (
                 <button
@@ -73,10 +73,11 @@ export function BookFilter({ filter: {
             </div>
             <Button 
               onClick={handleSearch}
-              className="rounded-full px-6 hover:animate-wiggle"
+              className="rounded-full px-4 sm:px-6 hover:animate-wiggle text-sm md:text-base"
               variant="playful"
             >
-              🔍 搜索
+              <span className="hidden sm:inline">🔍 搜索</span>
+              <span className="sm:hidden">🔍</span>
             </Button>
           </div>
           {param.keyword && (
@@ -97,18 +98,22 @@ export function BookFilter({ filter: {
         
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-            <h2 className="text-xl font-bold text-primary">📚 选择类目</h2>
+            <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+            <h2 className="text-lg md:text-xl font-bold text-primary">📚 选择分类</h2>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             {categories.map(({ label, value }) => (
-              <Badge 
-                key={value} 
-                variant={param.category === value ? "default" : "outline"}
-                className="hover:animate-wiggle"
-                onClick={() => handleFilter({ category: value })}
+              <Badge
+                key={value}
+                variant={param.category === value ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all duration-200 hover:scale-105 text-xs md:text-sm ${
+                  param.category === value
+                    ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
+                    : 'hover:bg-primary/10'
+                }`}
+                onClick={() => handleFilter({ category: value, page: 1 })}
               >
-                {label || value}
+                {label}
               </Badge>
             ))}
           </div>
@@ -116,18 +121,22 @@ export function BookFilter({ filter: {
         
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-8 bg-gradient-to-b from-secondary to-accent rounded-full"></div>
-            <h2 className="text-xl font-bold text-secondary">🔄 排序方式</h2>
+            <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-secondary to-accent rounded-full"></div>
+            <h2 className="text-lg md:text-xl font-bold text-secondary">🔄 排序方式</h2>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             {sortBy.map(({ label, value }) => (
-              <Badge 
-                key={value} 
-                variant={param.sortBy === value ? "secondary" : "outline"}
-                className="hover:animate-wiggle"
-                onClick={() => handleFilter({ sortBy: value })}
+              <Badge
+                key={value}
+                variant={param.sortBy === value ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all duration-200 hover:scale-105 text-xs md:text-sm ${
+                  param.sortBy === value
+                    ? 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
+                    : 'hover:bg-secondary/10'
+                }`}
+                onClick={() => handleFilter({ sortBy: value, page: 1 })}
               >
-                {label || value}
+                {label}
               </Badge>
             ))}
           </div>
@@ -151,35 +160,40 @@ export function BookFilter({ filter: {
           </div>
         )}
       </div>
-      <div className="mt-12 flex items-center justify-between bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl">📖</div>
-          <div className="text-lg font-semibold text-primary">
-            共 {total} 本精彩绘本
+      <div className="mt-12 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="text-xl md:text-2xl">📖</div>
+            <div className="text-base md:text-lg font-semibold text-primary">
+              共 {total} 本精彩绘本
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleFilter({ page: Math.max(1, param.page - 1) })}
-            disabled={param.page <= 1}
-            className="hover:animate-wiggle"
-          >
-            ← 上一页
-          </Button>
-          <div className="px-4 py-2 bg-white rounded-full shadow-soft font-semibold text-primary">
-            第 {param.page} 页
+          <div className="flex items-center gap-2 md:gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleFilter({ page: Math.max(1, param.page - 1) })}
+              disabled={param.page <= 1}
+              className="hover:animate-wiggle text-xs md:text-sm px-2 md:px-4"
+            >
+              <span className="hidden sm:inline">← 上一页</span>
+              <span className="sm:hidden">←</span>
+            </Button>
+            <div className="px-2 md:px-4 py-1 md:py-2 bg-white rounded-full shadow-soft font-semibold text-primary text-xs md:text-sm">
+              <span className="hidden sm:inline">第 {param.page} 页</span>
+              <span className="sm:hidden">{param.page}</span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleFilter({ page: param.page + 1 })}
+              disabled={param.page * 20 >= total}
+              className="hover:animate-wiggle text-xs md:text-sm px-2 md:px-4"
+            >
+              <span className="hidden sm:inline">下一页 →</span>
+              <span className="sm:hidden">→</span>
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleFilter({ page: param.page + 1 })}
-            disabled={param.page * 20 >= total}
-            className="hover:animate-wiggle"
-          >
-            下一页 →
-          </Button>
         </div>
       </div>
     </>

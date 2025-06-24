@@ -86,23 +86,23 @@ export default function Home(props: BookFilterProps) {
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       {/* 头部欢迎区域 */}
-      <div className="bg-gradient-to-r from-primary to-secondary text-white py-12">
+      <div className="bg-gradient-to-r from-primary to-secondary text-white py-8 md:py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-center items-center gap-4 mb-4">
-            <span className="text-4xl animate-bounce-gentle">📖</span>
-            <h1 className="text-4xl font-bold">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-4">
+            <span className="text-3xl sm:text-4xl animate-bounce-gentle">📖</span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold whitespace-nowrap">
               发现更多精彩绘本
             </h1>
-            <span className="text-4xl animate-bounce-gentle" style={{ animationDelay: '0.5s' }}>✨</span>
+            <span className="text-3xl sm:text-4xl animate-bounce-gentle" style={{ animationDelay: '0.5s' }}>✨</span>
           </div>
-          <p className="text-lg opacity-90 max-w-xl mx-auto">
+          <p className="text-base md:text-lg opacity-90 max-w-xl mx-auto">
             根据你的喜好，找到最适合的故事～
           </p>
         </div>
       </div>
       
       {/* 主要内容区域 */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6 md:py-12">
         <BookFilter {...props} />
       </div>
       
