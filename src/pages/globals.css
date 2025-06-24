@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 儿童绘本主题色彩 */
+  --background: #fef9f3;
+  --foreground: #2d3748;
+  --primary: #ff6b6b;
+  --primary-foreground: #ffffff;
+  --secondary: #ff6b6b;
+  --secondary-foreground: #ffffff;
+  --accent: #ff6b6b;
+  --accent-foreground: #2d3748;
+  --muted: #f7fafc;
+  --muted-foreground: #718096;
+  --card: #ffffff;
+  --card-foreground: #2d3748;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #ff6b6b;
+  --destructive: #e53e3e;
+  --destructive-foreground: #ffffff;
+  
+  /* 儿童友好的圆角和阴影 */
+  --radius: 1rem;
+  --shadow-soft: 0 4px 20px rgba(255, 107, 107, 0.1);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a202c;
+    --foreground: #f7fafc;
+    --primary: #ff8a8a;
+    --secondary: #68d8d0;
+    --accent: #ffd93d;
+    --muted: #2d3748;
+    --muted-foreground: #a0aec0;
+    --card: #2d3748;
+    --card-foreground: #f7fafc;
+    --border: #4a5568;
+    --input: #4a5568;
+  }
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+/* 儿童友好的滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff5252;
+}
+
+/* 动画效果 */
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* 儿童友好的按钮和交互元素 */
+.btn-playful {
+  @apply rounded-full px-6 py-3 font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-playful {
+  @apply rounded-2xl transition-all duration-300 hover:shadow-lg;
+  box-shadow: var(--shadow-card);
+}
