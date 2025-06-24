@@ -65,7 +65,7 @@ export function BookFilter({ filter: {
               {searchKeyword && (
                 <button
                   onClick={clearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground lg:hover:text-primary transition-colors"
                 >
                   ✕
                 </button>
@@ -73,7 +73,7 @@ export function BookFilter({ filter: {
             </div>
             <Button 
               onClick={handleSearch}
-              className="rounded-full px-4 sm:px-6 hover:animate-wiggle text-sm md:text-base"
+              className="rounded-full px-4 sm:px-6 lg:hover:animate-wiggle text-sm md:text-base"
               variant="playful"
             >
               <span className="hidden sm:inline">🔍 搜索</span>
@@ -106,10 +106,9 @@ export function BookFilter({ filter: {
               <Badge
                 key={value}
                 variant={param.category === value ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all duration-200 hover:scale-105 text-xs md:text-sm ${
+                className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
                   param.category === value
-                    ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
-                    : 'hover:bg-primary/10'
+                    && 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
                 }`}
                 onClick={() => handleFilter({ category: value, page: 1 })}
               >
@@ -129,10 +128,9 @@ export function BookFilter({ filter: {
               <Badge
                 key={value}
                 variant={param.sortBy === value ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all duration-200 hover:scale-105 text-xs md:text-sm ${
+                className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
                   param.sortBy === value
-                    ? 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
-                    : 'hover:bg-secondary/10'
+                    && 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
                 }`}
                 onClick={() => handleFilter({ sortBy: value, page: 1 })}
               >

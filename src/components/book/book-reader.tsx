@@ -161,7 +161,7 @@ export function BookReader({ book }: BookReaderProps) {
         variant="outline"
         size="icon"
         onClick={handleGoBack}
-        className="absolute left-4 top-16 bg-white/80 hover:bg-white/90 z-10"
+        className="absolute left-4 top-16 bg-white/80 z-10"
       >
         <ArrowLeft className="h-4 w-4" />
       </Button>
@@ -198,7 +198,7 @@ export function BookReader({ book }: BookReaderProps) {
         size="icon"
         onClick={handlePrevPage}
         disabled={currentPage === 0}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80"
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
@@ -208,7 +208,7 @@ export function BookReader({ book }: BookReaderProps) {
         size="icon"
         onClick={handleNextPage}
         disabled={currentPage === book.pages.length - 1}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80"
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
@@ -218,7 +218,7 @@ export function BookReader({ book }: BookReaderProps) {
           variant="outline"
           size="icon"
           onClick={() => setIsPlaying(!isPlaying)}
-          className="bg-white/80 hover:bg-white/90"
+          className="bg-white/80"
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
@@ -226,7 +226,7 @@ export function BookReader({ book }: BookReaderProps) {
           variant="outline"
           size="icon"
           onClick={handleReplay}
-          className="bg-white/80 hover:bg-white/90"
+          className="bg-white/80"
         >
           <RotateCcw className="h-4 w-4" />
         </Button>
@@ -234,7 +234,7 @@ export function BookReader({ book }: BookReaderProps) {
           variant="outline"
           size="icon"
           onClick={() => setIsMuted(!isMuted)}
-          className="bg-white/80 hover:bg-white/90"
+          className="bg-white/80"
         >
           {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </Button>
