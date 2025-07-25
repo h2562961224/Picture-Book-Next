@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
-import { PartPictureBook } from '@/types/book';
+import { PictureBook } from '@/types/book';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate, parseKeywords, cn } from '@/lib/utils';
 
 interface BookCardProps {
-  book: PartPictureBook;
+  book: PictureBook;
 }
 
 export function BookCard({ book }: BookCardProps) {

@@ -1,31 +1,47 @@
 'use client';
 
 import { Badge } from '../ui/badge';
-import { Filter, FilterParam, PartPictureBook } from '@/types/book';
+import { Filter, FilterParam, PictureBook } from '@/types/book';
 import { BookCard } from './book-card';
 import { buildFilterPath } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export interface BookFilterProps {
   filter: Filter;
   param: FilterParam;
-  books: PartPictureBook[];
+  books: PictureBook[];
   total: number;
 }
 
 export function BookFilter({ filter: {
-  categories, sortBy,
+  categories, sortBy, ages, difficulties,
 }, param, books, total }: BookFilterProps) {
 
   const router = useRouter();
   const [searchKeyword, setSearchKeyword] = useState(param.keyword || '');
+  const [selectedPrimary, setSelectedPrimary] = useState<string>('all');
+  const [showAllSubCategories, setShowAllSubCategories] = useState(false);
+
+  const secondCatOptions = useMemo(() => {
+    return categories.find((cat) => cat.value === selectedPrimary)?.children || [];
+  }, [selectedPrimary, categories]);
 
   const handleFilter = (cur: Partial<FilterParam>) => {
     //跳转到指定地址
     router.push(buildFilterPath(param, cur));
+  };
+
+  const handlePrimaryCategoryChange = (value: string) => {
+    setSelectedPrimary(value);
+    // 如果选择了一级类目，重置为该一级类目
+    handleFilter({ category: value, page: 1 });
+  };
+
+  const handleSecondaryCategoryChange = (value: string) => {
+    handleFilter({ category: value, page: 1 });
   };
 
   const handleSearch = () => {
@@ -96,28 +112,119 @@ export function BookFilter({ filter: {
           )}
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
             <h2 className="text-lg md:text-xl font-bold text-primary">📚 选择分类</h2>
           </div>
+          
+          {/* 一级类目 */}
+          <div className="space-y-3">
+            <h3 className="text-sm md:text-base font-medium text-primary/80">📖 主要分类</h3>
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {categories.map(({ label, value }) => {
+                const isSelected = selectedPrimary === value;
+                return (
+                  <Badge
+                    key={value}
+                    variant={isSelected ? 'default' : 'outline'}
+                    className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
+                      isSelected
+                        && 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
+                    }`}
+                    onClick={() => handlePrimaryCategoryChange(value)}
+                  >
+                    {label}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+          
+          {/* 二级类目 */}
+          {secondCatOptions.length > 1 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm md:text-base font-medium text-secondary/80">🔖 细分类目</h3>
+                {secondCatOptions.length > 6 && (
+                  <Button
+                    variant="outline"
+                    size='sm'
+                    onClick={() => setShowAllSubCategories(!showAllSubCategories)}
+                    className="text-xs text-primary transition-all duration-200 p-1 h-auto"
+                  >
+                    {showAllSubCategories ? '收起 ↑' : `更多 (${secondCatOptions.length - 6}) ↓`}
+                  </Button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {(showAllSubCategories ? secondCatOptions : secondCatOptions.slice(0, 6)).map(({ label, value }) => {
+                  const isSelected = param.category === value;
+                  return (
+                    <Badge
+                      key={value}
+                      variant={isSelected ? 'default' : 'outline'}
+                      className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
+                        isSelected
+                          && 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
+                      }`}
+                      onClick={() => handleSecondaryCategoryChange(value)}
+                    >
+                      {label}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 年龄 */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-secondary to-accent rounded-full"></div>
+            <h2 className="text-lg md:text-xl font-bold text-accent"> 📅 年龄</h2>
+          </div>
           <div className="flex flex-wrap gap-2 md:gap-3">
-            {categories.map(({ label, value }) => (
+            {ages.map(({ label, value }) => (
               <Badge
                 key={value}
-                variant={param.category === value ? 'default' : 'outline'}
+                variant={param.age === value ? 'default' : 'outline'}
                 className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
-                  param.category === value
-                    && 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
+                  param.age === value
+                    && 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
                 }`}
-                onClick={() => handleFilter({ category: value, page: 1 })}
+                onClick={() => handleFilter({ age: value, page: 1 })}
               >
                 {label}
               </Badge>
             ))}
           </div>
         </div>
-        
+
+        {/* 难度 */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-secondary to-accent rounded-full"></div>
+            <h2 className="text-lg md:text-xl font-bold text-accent"> 📚 难度</h2>
+          </div>
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            {difficulties.map(({ label, value }) => (
+              <Badge
+                key={value}
+                variant={param.difficulty === value ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all duration-200 text-xs md:text-sm ${
+                  param.difficulty === value
+                    && 'bg-gradient-to-r from-secondary to-accent text-white shadow-lg'
+                }`}
+                onClick={() => handleFilter({ difficulty: value, page: 1 })}
+              >
+                {label}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-2 h-6 md:h-8 bg-gradient-to-b from-secondary to-accent rounded-full"></div>

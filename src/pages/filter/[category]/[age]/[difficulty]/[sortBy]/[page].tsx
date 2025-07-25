@@ -7,17 +7,29 @@ interface PathParam {
   category: string;
   page: string;
   sortBy: string;
+  age: string;
+  difficulty: string;
 }
 
 
 
 export async function getServerSideProps({ params, query }: { params: PathParam, query: { keyword?: string } }) {
-  const { category, page, sortBy } = params;
+  const { category, page, sortBy, age, difficulty } = params;
   const keyword = query.keyword || '';
   
   const filterCatBooks = (await fetchAllBooks()).filter((book) => {
-    // 类别筛选
-    if (category && category !== 'all' && !book.categories.map((c) => c.name).includes(category)) {
+    // 类别筛选 - 使用categoryCode进行左匹配
+    if (category && category !== 'all' && !book.categoryCode.startsWith(category)) {
+      return false;
+    }
+    
+    // 年龄段筛选
+    if (age && age !== 'all' && !book.age_bracket.includes(age)) {
+      return false;
+    }
+
+    // 难度筛选
+    if (difficulty && difficulty !== 'all' && book.difficulty_level !== difficulty) {
       return false;
     }
     
@@ -49,10 +61,6 @@ export async function getServerSideProps({ params, query }: { params: PathParam,
   const end = start + 20;
   const books = sortBook(filterCatBooks, sortBy).slice(start, end);
   const filter = await fetchFilter();
-  const tags = Array.from(new Set(filterCatBooks.map((book) => book.keyword && JSON.parse(book.keyword) || []).flat())).map((tag) => ({
-    label: tag,
-    value: tag,
-  }));
   
   return {
     props: {
@@ -75,7 +83,7 @@ export async function getServerSideProps({ params, query }: { params: PathParam,
         hits,
         updated_at
       })),
-      filter: { ...filter, tags: [ { label: '全部', value: 'all' }, ...tags ] },
+      filter,
       total: filterCatBooks.length,
       param: { ...params, page: Number(page), keyword }
     }

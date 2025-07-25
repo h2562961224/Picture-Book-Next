@@ -63,6 +63,8 @@ export async function getServerSideProps({ query }: { query: { keyword: string }
       param: {
         category: 'all',
         tag: 'all',
+        age: 'all',
+        difficulty: 'all',
         sortBy: 'updated_at',
         page: 1,
         keyword
