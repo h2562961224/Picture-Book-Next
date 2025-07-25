@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@radix-ui/react-select": "^2.1.5",
+    "@types/minimatch": "^6.0.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.1.0",
     "lucide-react": "^0.474.0",
+    "minimatch": "^10.0.3",
     "next": "15.1.6",
     "next-pwa": "^5.6.0",
     "react": "^19.0.0",
@@ -22,7 +24,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/crypto-js": "^4.2.2",
-    "@types/minimatch": "^6.0.0",
     "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
