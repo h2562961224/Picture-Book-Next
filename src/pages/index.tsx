@@ -1,45 +1,22 @@
 'use client';
 
 import { BookFilter, BookFilterProps } from '@/components/book/book-filter';
-import { fetchAllBooks, fetchFilter, sortBook } from '@/lib/books';
+import { fetchAllBooks, fetchFilter } from '@/lib/books';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { getReadingHistoryCount } from '@/lib/reading-history';
+import { Button } from '@/components/ui/button';
 
 
 
-export async function getServerSideProps({ query }: { query: { keyword: string } }) {
-  const keyword = query.keyword || '';
+export async function getStaticProps() {
   
   const allBooks = await fetchAllBooks();
-  
-  // 应用关键词搜索筛选
-  const filteredBooks = allBooks.filter((book) => {
-    if (keyword && keyword.trim()) {
-      const searchTerm = keyword.toLowerCase().trim();
-      const titleMatch = book.title.toLowerCase().includes(searchTerm);
-      const authorMatch = book.author.toLowerCase().includes(searchTerm);
-      const publishingMatch = book.publishing.toLowerCase().includes(searchTerm);
-      
-      // 搜索标签
-      let keywordMatch = false;
-      try {
-        const keywords = JSON.parse(book.keyword || '[]');
-        keywordMatch = keywords.some((kw: string) => kw.toLowerCase().includes(searchTerm));
-      } catch {
-        keywordMatch = false;
-      }
-      
-      if (!titleMatch && !authorMatch && !publishingMatch && !keywordMatch) {
-        return false;
-      }
-    }
-    return true;
-  });
-  
-  const books = sortBook(filteredBooks, 'updated_at').slice(0, 20);
   const filter = await fetchFilter();
   
   return {
     props: {
-      books: books.map(({
+      allBooks: allBooks.map(({
         id,
         title,
         image,
@@ -47,6 +24,9 @@ export async function getServerSideProps({ query }: { query: { keyword: string }
         author,
         publishing,
         hits,
+        categoryCode,
+        age_bracket,
+        difficulty_level,
         updated_at
       }) => ({
         id,
@@ -56,28 +36,51 @@ export async function getServerSideProps({ query }: { query: { keyword: string }
         author,
         publishing,
         hits,
+        categoryCode,
+        age_bracket,
+        difficulty_level,
         updated_at
       })),
-      filter,
-      total: filteredBooks.length,
-      param: {
-        category: 'all',
-        tag: 'all',
-        age: 'all',
-        difficulty: 'all',
-        sortBy: 'updated_at',
-        page: 1,
-        keyword
-      }
+      filter
     }
   }
 }
 
 export default function Home(props: BookFilterProps) {
+  const router = useRouter();
+  const [historyCount, setHistoryCount] = useState(0);
+
+  useEffect(() => {
+    setHistoryCount(getReadingHistoryCount());
+  }, []);
+
+  const handleGoToHistory = () => {
+    router.push('/recent-reading');
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+      {/* 最近阅读浮动按钮 */}
+      {historyCount > 0 && (
+        <div className="fixed top-4 right-4 z-50">
+          <Button
+            onClick={handleGoToHistory}
+            className="rounded-full shadow-lg bg-white text-primary hover:bg-primary hover:text-white transition-all duration-300 border-2 border-primary/20 hover:border-primary"
+            size="sm"
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-lg">📚</span>
+              <span className="hidden sm:inline font-medium">最近阅读</span>
+              <span className="bg-primary text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                {historyCount > 99 ? '99+' : historyCount}
+              </span>
+            </span>
+          </Button>
+        </div>
+      )}
+
       {/* 头部欢迎区域 */}
-      <div className="bg-gradient-to-r from-primary to-secondary text-white py-12 md:py-16">
+      <div className="bg-gradient-to-r from-primary to-secondary text-white py-12 md:py-16 relative">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 mb-4 md:mb-6">
             <span className="text-4xl sm:text-5xl md:text-6xl animate-bounce-gentle">📚</span>
@@ -96,6 +99,22 @@ export default function Home(props: BookFilterProps) {
             <span className="text-2xl md:text-3xl animate-wiggle" style={{ animationDelay: '0.6s' }}>🎨</span>
             <span className="text-2xl md:text-3xl animate-wiggle" style={{ animationDelay: '0.8s' }}>🎭</span>
           </div>
+          
+          {/* 头部快速入口 */}
+          {historyCount > 0 && (
+            <div className="mt-8">
+              <Button
+                onClick={handleGoToHistory}
+                variant="outline"
+                className="bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary transition-all duration-300 rounded-full px-6"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-lg">📖</span>
+                  <span>查看最近阅读 ({historyCount})</span>
+                </span>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       
